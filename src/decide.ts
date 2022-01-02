@@ -4,7 +4,7 @@ import path from "path";
 import { appDir } from "./configuration.js";
 import { Decision, TORRENT_CACHE_FOLDER } from "./constants.js";
 import db, { DecisionEntry } from "./db.js";
-import { JackettResult } from "./jackett.js";
+import { ProwlarrResult } from "./prowlarr.js";
 import { Label, logger } from "./logger.js";
 import { getRuntimeConfig } from "./runtimeConfig.js";
 import { Searchee } from "./searchee.js";
@@ -16,7 +16,7 @@ export interface ResultAssessment {
 }
 
 const createReasonLogger =
-	(Title: string, tracker: string, name: string) =>
+	(Title: string, tracker: number, name: string) =>
 	(decision: Decision, cached): void => {
 		function logReason(reason): void {
 			logger.verbose({
@@ -77,7 +77,7 @@ function sizeDoesMatch(resultSize, searchee) {
 }
 
 async function assessResultHelper(
-	{ Link, Size }: JackettResult,
+	{ Link, Size }: ProwlarrResult,
 	searchee: Searchee,
 	hashesToExclude: string[]
 ): Promise<ResultAssessment> {
@@ -126,7 +126,7 @@ function cacheTorrentFile(meta: Metafile): void {
 }
 
 async function assessAndSaveResults(
-	result: JackettResult,
+	result: ProwlarrResult,
 	searchee: Searchee,
 	Guid: string,
 	infoHashesToExclude: string[]
@@ -152,11 +152,11 @@ async function assessAndSaveResults(
 }
 
 async function assessResultCaching(
-	result: JackettResult,
+	result: ProwlarrResult,
 	searchee: Searchee,
 	infoHashesToExclude: string[]
 ): Promise<ResultAssessment> {
-	const { Guid, Title, TrackerId: tracker } = result;
+	const { Guid, Title, IndexerId: tracker } = result;
 	const logReason = createReasonLogger(Title, tracker, searchee.name);
 
 	db.data.decisions[searchee.name] ??= {};

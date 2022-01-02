@@ -4,11 +4,7 @@ import { getClient } from "./clients/TorrentClient.js";
 import { Action, Decision, InjectionResult } from "./constants.js";
 import db from "./db.js";
 import { assessResult, ResultAssessment } from "./decide.js";
-import {
-	JackettResponse,
-	JackettResult,
-	makeJackettRequest,
-} from "./jackett.js";
+import { ProwlarrResult, makeProwlarrRequest } from "./prowlarr.js";
 import { logger } from "./logger.js";
 import { filterByContent, filterDupes, filterTimestamps } from "./preFilter.js";
 import { pushNotifier } from "./pushNotifier.js";
@@ -30,7 +26,7 @@ import { getTag, stripExtension } from "./utils.js";
 
 interface AssessmentWithTracker {
 	assessment: ResultAssessment;
-	tracker: string;
+	tracker: number;
 }
 
 async function findOnOtherSites(
@@ -41,22 +37,22 @@ async function findOnOtherSites(
 	const { action } = getRuntimeConfig();
 
 	const assessEach = async (
-		result: JackettResult
+		result: ProwlarrResult
 	): Promise<AssessmentWithTracker> => ({
 		assessment: await assessResult(result, searchee, hashesToExclude),
-		tracker: result.TrackerId,
+		tracker: result.IndexerId,
 	});
 
 	const tag = getTag(searchee.name);
 	const query = stripExtension(searchee.name);
-	let response: JackettResponse;
+	let response: ProwlarrResult[];
 	try {
-		response = await makeJackettRequest(query, nonceOptions);
+		response = await makeProwlarrRequest(query, nonceOptions);
 	} catch (e) {
-		logger.error(`error querying Jackett for ${query}`);
+		logger.error(`error querying Prowlarr for ${query}`);
 		return 0;
 	}
-	const results = response.Results;
+	const results = response;
 
 	const loaded = await Promise.all<AssessmentWithTracker>(
 		results.map(assessEach)

@@ -1,8 +1,8 @@
 import { Action } from "./constants.js";
 interface RuntimeConfig {
 	offset: number;
-	jackettServerUrl: string;
-	jackettApiKey: string;
+	prowlarrServerUrl: string;
+	prowlarrApiKey: string;
 	delay: number;
 	trackers: string[];
 	torrentDir: string;

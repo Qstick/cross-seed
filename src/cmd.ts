@@ -43,18 +43,18 @@ function createCommandWithSharedOptions(name, description) {
 		.command(name)
 		.description(description)
 		.requiredOption(
-			"-u, --jackett-server-url <url>",
-			"Your Jackett server url",
-			fileConfig.jackettServerUrl
+			"-u, --prowlarr-server-url <url>",
+			"Your Prowlarr server url",
+			fileConfig.prowlarrServerUrl
 		)
 		.requiredOption(
-			"-k, --jackett-api-key <key>",
-			"Your Jackett API key",
-			fileConfig.jackettApiKey
+			"-k, --prowlarr-api-key <key>",
+			"Your Prowlarr API key",
+			fileConfig.prowlarrApiKey
 		)
 		.requiredOption(
 			"-t, --trackers <tracker1>,<tracker2>",
-			"Comma-separated list of Jackett tracker ids to search  (Tracker ids can be found in their Torznab feed paths)",
+			"Comma-separated list of Prowlarr tracker ids to search  (Tracker ids can be found in their Torznab feed paths)",
 			fallback(fileConfig.trackers?.join(","), "")
 		)
 		.requiredOption(

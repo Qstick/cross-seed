@@ -69,7 +69,7 @@ export async function parseTorrentFromURL(url: string): Promise<Metafile> {
 }
 
 export function saveTorrentFile(
-	tracker: string,
+	tracker: number,
 	tag = "",
 	info: Metafile,
 	nonceOptions: NonceOptions

@@ -9,7 +9,7 @@ import {
 	NonceOptions,
 } from "./runtimeConfig.js";
 
-export interface JackettResult {
+export interface ProwlarrResult {
 	Author: unknown;
 	BlackholeLink: string;
 	BookTitle: unknown;
@@ -38,22 +38,9 @@ export interface JackettResult {
 	TMDb: unknown;
 	TVDBId: unknown;
 	Title: string;
-	Tracker: string;
-	TrackerId: string;
+	Indexer: string;
+	IndexerId: number;
 	UploadVolumeFactor: number;
-}
-
-export interface JackettIndexer {
-	ID: string;
-	Name: string;
-	Status: number;
-	Results: number;
-	Error: string;
-}
-
-export interface JackettResponse {
-	Results: JackettResult[];
-	Indexers: JackettIndexer[];
 }
 
 function reformatTitleForSearching(name: string): string {
@@ -73,53 +60,53 @@ function reformatTitleForSearching(name: string): string {
 		.trim();
 }
 
-function fullJackettUrl(jackettServerUrl: string, params) {
-	const jackettPath = `/api/v2.0/indexers/all/results`;
-	return `${jackettServerUrl}${jackettPath}?${querystring.encode(params)}`;
+function fullProwlarrUrl(prowlarrServerUrl: string, params) {
+	const prowlarrPath = `/api/v1/search`;
+	return `${prowlarrServerUrl}${prowlarrPath}?${querystring.encode(params)}`;
 }
 
-export async function validateJackettApi(): Promise<void> {
-	const { jackettServerUrl, jackettApiKey: apikey } = getRuntimeConfig();
+export async function validateProwlarrApi(): Promise<void> {
+	const { prowlarrServerUrl, prowlarrApiKey: apikey } = getRuntimeConfig();
 
-	if (/\/$/.test(jackettServerUrl)) {
-		logger.warn("Warning: Jackett server url should not end with '/'");
+	if (/\/$/.test(prowlarrServerUrl)) {
+		logger.warn("Warning: Prowlarr server url should not end with '/'");
 	}
 
 	// search for gibberish so the results will be empty
 	const gibberish = "bscdjpstabgdspjdasmomdsenqciadsnocdpsikncaodsnimcdqsanc";
 	try {
-		await makeJackettRequest(gibberish);
+		await makeProwlarrRequest(gibberish);
 	} catch (e) {
-		const dummyUrl = fullJackettUrl(jackettServerUrl, { apikey });
-		throw new CrossSeedError(`Could not reach Jackett at ${dummyUrl}`);
+		const dummyUrl = fullProwlarrUrl(prowlarrServerUrl, { apikey });
+		throw new CrossSeedError(`Could not reach Prowlarr at ${dummyUrl}`);
 	}
 }
 
-export function makeJackettRequest(
+export function makeProwlarrRequest(
 	name: string,
 	nonceOptions: NonceOptions = EmptyNonceOptions
-): Promise<JackettResponse> {
+): Promise<ProwlarrResult[]> {
 	const {
-		jackettApiKey,
+		prowlarrApiKey,
 		trackers: runtimeConfigTrackers,
-		jackettServerUrl,
+		prowlarrServerUrl,
 	} = getRuntimeConfig();
 	const { trackers = runtimeConfigTrackers } = nonceOptions;
 	const params = {
-		apikey: jackettApiKey,
-		Query: reformatTitleForSearching(name),
-		"Tracker[]": trackers,
+		apikey: prowlarrApiKey,
+		query: reformatTitleForSearching(name),
+		indexerIds: trackers,
 	};
 
 	const opts = {
 		method: "GET",
-		url: fullJackettUrl(jackettServerUrl, params),
+		url: fullProwlarrUrl(prowlarrServerUrl, params),
 		json: true,
 	};
 
 	logger.verbose({
-		label: Label.JACKETT,
-		message: `making search with query "${params.Query}"`,
+		label: Label.PROWLARR,
+		message: `making search with query "${params.query}"`,
 	});
 
 	return new Promise((resolve, reject) => {

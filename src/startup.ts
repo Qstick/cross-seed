@@ -1,6 +1,6 @@
 import { getClient } from "./clients/TorrentClient.js";
 import { CrossSeedError } from "./errors.js";
-import { validateJackettApi } from "./jackett.js";
+import { validateProwlarrApi } from "./prowlarr.js";
 import { logger } from "./logger.js";
 import { getRuntimeConfig } from "./runtimeConfig.js";
 import { validateTorrentDir } from "./torrent.js";
@@ -20,7 +20,7 @@ export async function doStartupValidation(): Promise<void> {
 	const downloadClient = getClient();
 	await Promise.all<void>(
 		[
-			validateJackettApi(),
+			validateProwlarrApi(),
 			downloadClient?.validateConfig(),
 			validateTorrentDir(),
 		].filter(Boolean)

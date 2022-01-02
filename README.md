@@ -20,7 +20,7 @@ delivery into your client.
 ## Requirements
 
 -   [Node 14+](https://nodejs.org/en/download)
--   [Jackett](https://github.com/Jackett/Jackett)
+-   [Prowlarr](https://github.com/Prowlarr/Prowlarr)
 
 It will work on Mac and on Linux; I haven't tested it on Windows but it should
 work there too.
@@ -37,8 +37,8 @@ Here's an example invocation:
 
 ```shell script
 npx cross-seed search \
-  --jackett-server-url http://localhost:9117/jackett \
-  --jackett-api-key JACKETT_API_KEY \
+  --prowlarr-server-url http://localhost:9696/prowlarr \
+  --prowlarr-api-key PROWLARR_API_KEY \
   --torrent-dir /home/rtorrent/.session \
   --output-dir /tmp/torrents
 ```
@@ -53,9 +53,9 @@ Search for cross-seeds
 
 
 Options:
-  -u, --jackett-server-url <url>        Your Jackett server url
-  -k, --jackett-api-key <key>           Your Jackett API key
-  -t, --trackers <tracker1>,<tracker2>  Comma-separated list of Jackett tracker ids to search (Tracker ids can be found in their Torznab feed paths)
+  -u, --prowlarr-server-url <url>        Your Prowlarr server url
+  -k, --prowlarr-api-key <key>           Your Prowlarr API key
+  -t, --trackers <tracker1>,<tracker2>  Comma-separated list of Prowlarr tracker ids to search (Tracker ids can be found in their Torznab feed paths)
   -i, --torrent-dir <dir>               Directory with torrent files
   -s, --output-dir <dir>                Directory to save results in
   -a, --search-all                      Search for all torrents regardless of their contents (default: false)
@@ -98,23 +98,3 @@ To update,
 npm uninstall -g cross-seed
 npm install -g cross-seed
 ```
-
-## Daemon mode (beta, rTorrent only, Docker recommended)
-
-`cross-seed` supports a daemon mode, wherein the app is always running, and you
-can trigger an HTTP request to search for cross-seeds of a specific torrent. See
-more info in the
-[wiki page](https://github.com/mmgoodnow/cross-seed/wiki/Daemon-Mode).
-
-## Direct client injection (alpha, rTorrent and qBittorrent only)
-
-As mentioned above, `cross-seed` can inject the torrents it finds directly into
-your torrent client. See more info in the
-[wiki page](https://github.com/mmgoodnow/cross-seed/wiki/Injection).
-
-## Troubleshooting
-
-First, check the [FAQ](https://github.com/mmgoodnow/cross-seed/wiki/FAQ). If you
-still can't figure it out, feel free to
-[open an issue](https://github.com/mmgoodnow/cross-seed/issues/new) or
-[start a discussion](https://github.com/mmgoodnow/cross-seed/discussions/new)

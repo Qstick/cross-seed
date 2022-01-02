@@ -13,8 +13,8 @@ interface FileConfig {
 	configVersion?: number;
 	delay?: number;
 	includeEpisodes?: boolean;
-	jackettApiKey?: string;
-	jackettServerUrl?: string;
+	prowlarrApiKey?: string;
+	prowlarrServerUrl?: string;
 	outputDir?: string;
 	rtorrentRpcUrl?: string;
 	searchAll?: boolean;

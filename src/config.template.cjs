@@ -2,10 +2,10 @@
 // it here as a default.
 
 module.exports = {
-	jackettServerUrl: "http://localhost:9117/jackett",
-	jackettApiKey: "YOUR_JACKETT_API_KEY_HERE",
+	prowlarrServerUrl: "http://localhost:9696/prowlarr",
+	prowlarrApiKey: "YOUR_PROWLARR_API_KEY_HERE",
 
-	// Pause at least this much in between each Jackett search. Higher is safer.
+	// Pause at least this much in between each Prowlarr search. Higher is safer.
 	// It is not recommended to set this to less than 2 seconds.
 	delay: 10,
 
